@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema Escolar - Colegio Papu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET Y GENERALES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: #eef2f7;
+            color: #1a2634;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at 10% 20%, #f0f4fa, #d9e2ef);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #0b2b44, #1a4a6e);
+            color: #fff;
+            padding: 1.4rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .header h1 {
+            font-weight: 900;
+            font-size: 2.4rem;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        .header h1 span {
+            font-weight: 300;
+            font-size: 1.1rem;
+            color: #aac9e5;
+            margin-left: 0.8rem;
+        }
+        .header .year {
+            font-weight: 300;
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.12);
+            padding: 0.4rem 1.6rem;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.15);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== NAV ===== */
+        .nav {
+            background: rgba(28, 61, 90, 0.92);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 0.7rem 1rem;
+            flex-wrap: wrap;
+            border-bottom: 3px solid #2b5a7a;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav a {
+            color: #e8f0f8;
+            text-decoration: none;
+            padding: 0.6rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.25s;
+            font-size: 1rem;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav a .nav-icon {
+            font-size: 1.2rem;
+        }
+        .nav a::before {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: #4a8bb7;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        .nav a:hover::before {
+            width: 60%;
+        }
+        .nav a:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-2px);
+        }
+        .nav a.active {
+            background: #4a8bb7;
+            box-shadow: 0 6px 25px rgba(74,139,183,0.5);
+            color: #fff;
+        }
+        .nav a.active::before {
+            display: none;
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            flex: 1;
+            padding: 2.5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ===== SECCIONES ===== */
+        .section {
+            display: none;
+            animation: fadeSlide 0.5s ease;
+            padding: 2rem;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.06);
+            border: 1px solid rgba(255,255,255,0.4);
+            transition: border-color 0.3s;
+        }
+        .section.active {
+            display: block;
+        }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(25px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Colores de borde por sección */
+        .section-profesores { border-top: 8px solid #2c7fb8; background: rgba(248, 252, 255, 0.8); }
+        .section-materias    { border-top: 8px solid #27ae60; background: rgba(246, 255, 249, 0.8); }
+        .section-calificaciones { border-top: 8px solid #e67e22; background: rgba(255, 251, 245, 0.8); }
+        .section-ayuda       { border-top: 8px solid #8e44ad; background: rgba(250, 245, 255, 0.8); }
+        .section-inicio      { border-top: 8px solid #0b2b44; background: rgba(255,255,255,0.6); }
+
+        .section-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #0b2b44;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .section-title .icon {
+            font-size: 2.4rem;
+            opacity: 0.8;
+        }
+        .section-desc {
+            color: #4a668a;
+            margin-bottom: 2rem;
+            font-weight: 400;
+            font-size: 1.1rem;
+            border-left: 5px solid #4a8bb7;
+            padding-left: 1.2rem;
+            background: rgba(255,255,255,0.3);
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+        }
+
+        /* ===== TARJETAS DE INICIO ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .card {
+            background: #fff;
+            border-radius: 28px;
+            padding: 2rem 1.8rem;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.04);
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-left: 12px solid #4a8bb7;
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+            display: flex;
+            flex-direction: column;
+        }
+        .card::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .card:hover {
+            transform: translateY(-12px) scale(1.01);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+        }
+        .card .card-icon {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .card h3 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #0b2b44;
+            margin-bottom: 0.2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .card .sub {
+            color: #5f7d9c;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1.2rem;
+            letter-spacing: 0.3px;
+            position: relative;
+            z-index: 1;
+        }
+        .card .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+        }
+        .card .btn-group button {
+            background: none;
+            border: none;
+            text-align: left;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-weight: 600;
+            color: #1e3b5a;
+            padding: 0.8rem 0.3rem;
+            border-bottom: 2px solid #e8edf4;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+        }
+        .card .btn-group button:hover {
+            color: #2c7fb8;
+            padding-left: 12px;
+            border-bottom-color: #2c7fb8;
+            background: rgba(44,127,184,0.04);
+        }
+        .card .btn-group button .arrow {
+            font-size: 1.3rem;
+            color: #8bb3d9;
+            transition: transform 0.25s;
+        }
+        .card .btn-group button:hover .arrow {
+            transform: translateX(8px);
+        }
+
+        /* Colores de tarjetas */
+        .card-alumnos { border-left-color: #e74c3c; }
+        .card-profesores { border-left-color: #2c7fb8; }
+        .card-materias { border-left-color: #27ae60; }
+        .card-calificaciones { border-left-color: #e67e22; }
+
+        /* ===== ESTADÍSTICAS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+        .stat-box {
+            background: #fff;
+            border-radius: 24px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+            border-bottom: 8px solid #4a8bb7;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-box:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+        .stat-box .number {
+            font-size: 3.4rem;
+            font-weight: 900;
+            color: #0b2b44;
+            line-height: 1.1;
+        }
+        .stat-box .label {
+            font-size: 0.85rem;
+            color: #5f7d9c;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 0.3rem;
+            font-weight: 600;
+        }
+        .stat-box .sub-label {
+            font-size: 0.8rem;
+            color: #8aa3c0;
+            margin-top: 0.2rem;
+            font-weight: 500;
+        }
+        .stat-box .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.12;
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+        }
+
+        .stat-profesores { border-bottom-color: #2c7fb8; }
+        .stat-materias { border-bottom-color: #27ae60; }
+        .stat-alumnos { border-bottom-color: #e74c3c; }
+        .stat-promedio { border-bottom-color: #8e44ad; }
+        .stat-aprobados { border-bottom-color: #2ecc71; }
+        .stat-reprobados { border-bottom-color: #e67e22; }
+
+        /* Gráfica */
+        .stat-grafica {
+            background: #fff;
+            border-radius: 28px;
+            padding: 2rem 2rem 2.5rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+            text-align: center;
+            grid-column: span 2;
+            border-bottom: 8px solid #8e44ad;
+            transition: transform 0.3s;
+        }
+        .stat-grafica:hover {
+            transform: scale(1.01);
+        }
+        .stat-grafica canvas {
+            max-width: 240px;
+            max-height: 240px;
+            width: 100%;
+            height: auto;
+        }
+        .stat-grafica .label {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a2a3a;
+            margin: 0.5rem 0 0.2rem;
+        }
+        .stat-grafica .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem 1.8rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .stat-grafica .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .stat-grafica .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        /* ===== LISTAS (Profesores y Materias) - Diseño tipo tarjetas ===== */
+        .list-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .list-container .list-header {
+            display: none; /* Ocultamos el encabezado tradicional */
+        }
+        .list-container ul {
+            list-style: none;
+            grid-column: 1 / -1;
+            display: contents;
+        }
+        .list-container li {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.5rem 1.8rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.4rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .list-container li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: #4a8bb7;
+            border-radius: 0 4px 4px 0;
+        }
+        .list-container li:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+            border-color: #dce3ed;
+        }
+        .list-container li .nombre {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #0b2b44;
+        }
+        .list-container li .detalle {
+            color: #4a668a;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            width: 100%;
+            justify-content: space-between;
+        }
+        .list-container li .badge {
+            background: #4a8bb7;
+            color: #fff;
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .list-container li .badge-verde { background: #27ae60; }
+        .list-container li .badge-naranja { background: #e67e22; }
+        .list-container li .badge-morado { background: #8e44ad; }
+        .list-container li .profesor-icon {
+            font-size: 2rem;
+            opacity: 0.08;
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+        }
+
+        /* ===== CALIFICACIONES (tarjetas con gradientes) ===== */
+        .calif-card {
+            background: #fff;
+            border-radius: 28px;
+            padding: 1.8rem 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+            border-left: 10px solid #4a8bb7;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .calif-card::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .calif-card:hover {
+            box-shadow: 0 15px 45px rgba(0,0,0,0.08);
+            transform: translateX(6px);
+        }
+        .calif-card h4 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0b2b44;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 3px solid #eef3f8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .calif-card h4 .materia-icon {
+            font-size: 1.8rem;
+        }
+        .calif-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .calif-card li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0.2rem;
+            border-bottom: 1px solid #f2f6fa;
+            font-size: 1rem;
+            align-items: center;
+        }
+        .calif-card li:last-child {
+            border-bottom: none;
+        }
+        .calif-card li .nombre-alumno {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .calif-card li .nota {
+            font-weight: 800;
+            color: #0b2b44;
+            background: #f0f4fa;
+            padding: 0.1rem 1rem;
+            border-radius: 30px;
+            font-size: 0.95rem;
+        }
+        .calif-card li .nota-alta { background: #d4edda; color: #155724; }
+        .calif-card li .nota-media { background: #fff3cd; color: #856404; }
+        .calif-card li .nota-baja { background: #f8d7da; color: #721c24; }
+
+        /* ===== AYUDA - Diseño de acordeón ===== */
+        .ayuda-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .ayuda-item {
+            background: #fff;
+            border-radius: 24px;
+            padding: 1.8rem 2rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+            border-left: 8px solid #8e44ad;
+            transition: all 0.3s;
+        }
+        .ayuda-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.06);
+        }
+        .ayuda-item .ayuda-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .ayuda-item h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0b2b44;
+            margin-bottom: 0.3rem;
+        }
+        .ayuda-item p {
+            color: #4a668a;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* ===== MODAL MEJORADO ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal {
+            background: #fff;
+            max-width: 780px;
+            width: 94%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 36px;
+            padding: 2.8rem 3.2rem;
+            box-shadow: 0 40px 90px rgba(0,0,0,0.25);
+            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .modal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #2c7fb8, #8e44ad, #27ae60);
+            border-radius: 36px 36px 0 0;
+        }
+        @keyframes modalPop {
+            0% { transform: scale(0.9) translateY(30px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .modal h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #0b2b44;
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .modal .modal-sub {
+            color: #4a668a;
+            font-size: 1.05rem;
+            margin-bottom: 1.8rem;
+            border-left: 4px solid #4a8bb7;
+            padding-left: 1rem;
+        }
+        .modal .item-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        .modal .item-list .item {
+            padding: 0.9rem 1.2rem;
+            border-radius: 16px;
+            background: #f8fafc;
+            border: 1px solid #eef3f8;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal .item-list .item:hover {
+            background: #f0f6ff;
+            border-color: #4a8bb7;
+            transform: translateX(4px);
+        }
+        .modal .item-list .item .item-nombre {
+            font-weight: 600;
+            color: #1a2a3a;
+        }
+        .modal .item-list .item .item-badge {
+            font-size: 0.75rem;
+            background: #eef3f8;
+            color: #2c3e50;
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+        }
+        .modal .info-detalle {
+            background: #f8fafc;
+            padding: 1.8rem 2.2rem;
+            border-radius: 24px;
+            margin: 1.5rem 0 2rem;
+            border-left: 6px solid #4a8bb7;
+        }
+        .modal .info-detalle p {
+            margin: 0.5rem 0;
+            line-height: 1.7;
+        }
+        .modal .info-detalle ul {
+            list-style: none;
+            padding-left: 0.5rem;
+        }
+        .modal .info-detalle ul li {
+            padding: 0.4rem 0;
+            border-bottom: 1px dashed #dce3ed;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .modal .info-detalle ul li:last-child {
+            border-bottom: none;
+        }
+        .modal .btn-group-modal {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+            justify-content: flex-end;
+        }
+        .modal .btn {
+            border: none;
+            padding: 0.8rem 2.4rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-family: 'Montserrat', Arial, sans-serif;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+        .modal .btn-primary {
+            background: #2c7fb8;
+            color: #fff;
+        }
+        .modal .btn-primary:hover {
+            background: #1f5f8a;
+            transform: scale(1.03);
+        }
+        .modal .btn-danger {
+            background: #e74c3c;
+            color: #fff;
+        }
+        .modal .btn-danger:hover {
+            background: #c0392b;
+            transform: scale(1.03);
+        }
+        .modal .btn-volver {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        .modal .btn-volver:hover {
+            background: #d5dbdf;
+            transform: scale(1.03);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: linear-gradient(135deg, #0b2b44, #1a4a6e);
+            color: #aac3db;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.95rem;
+            margin-top: auto;
+            border-top: 3px solid #2b5a7a;
+        }
+        .footer strong {
+            color: #fff;
+            font-weight: 700;
+        }
+        .footer span {
+            opacity: 0.6;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header { padding: 1rem 1.5rem; }
+            .header h1 { font-size: 1.7rem; }
+            .header h1 span { font-size: 0.9rem; }
+            .nav a { padding: 0.4rem 1.2rem; font-size: 0.85rem; }
+            .nav a .nav-icon { font-size: 1rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .stat-grafica { grid-column: span 1; }
+            .section { padding: 1.2rem; }
+            .modal { padding: 1.8rem; }
+            .list-container { grid-template-columns: 1fr; }
+            .ayuda-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .stat-grafica canvas { max-width: 180px; max-height: 180px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <h1>🏫 Colegio Papu <span>Sistema Escolar</span></h1>
+        <div class="year">📅 Año lectivo 2026</div>
+    </header>
+
+    <!-- ===== NAV ===== -->
+    <nav class="nav" id="mainNav">
+        <a class="active" data-section="inicio"><span class="nav-icon">🏠</span> Inicio</a>
+        <a data-section="profesores"><span class="nav-icon">👨‍🏫</span> Profesores</a>
+        <a data-section="materias"><span class="nav-icon">📚</span> Materias</a>
+        <a data-section="calificaciones"><span class="nav-icon">📊</span> Calificaciones</a>
+        <a data-section="ayuda"><span class="nav-icon">❓</span> Ayuda</a>
+    </nav>
+
+    <!-- ===== MAIN ===== -->
+    <main class="main">
+
+        <!-- SECCIÓN INICIO -->
+        <section id="section-inicio" class="section active section-inicio">
+            <h2 class="section-title"><span class="icon">🚀</span> Panel de Control</h2>
+            <p class="section-desc">Bienvenido al sistema integrado. Accede a los módulos principales.</p>
+
+            <div class="cards-grid">
+                <div class="card card-alumnos">
+                    <div class="card-icon">👩‍🎓</div>
+                    <h3>1. Alumnos</h3>
+                    <div class="sub">Gestión de Estudiantes</div>
+                    <div class="btn-group">
+                        <button data-action="gestion-estudiantes">Gestionar Estudiantes <span class="arrow">→</span></button>
+                    </div>
+                </div>
+                <div class="card card-profesores">
+                    <div class="card-icon">👨‍🏫</div>
+                    <h3>2. Profesores</h3>
+                    <div class="sub">Listado y perfiles</div>
+                    <div class="btn-group">
+                        <button data-action="lista-docentes">Lista de Docentes <span class="arrow">→</span></button>
+                    </div>
+                </div>
+                <div class="card card-materias">
+                    <div class="card-icon">📚</div>
+                    <h3>3. Materias</h3>
+                    <div class="sub">Currículo académico</div>
+                    <div class="btn-group">
+                        <button data-action="ver-materias">Ver Materias <span class="arrow">→</span></button>
+                    </div>
+                </div>
+                <div class="card card-calificaciones">
+                    <div class="card-icon">📊</div>
+                    <h3>4. Calificaciones</h3>
+                    <div class="sub">Estadísticas rápidas</div>
+                    <div class="btn-group">
+                        <button data-action="detalle-calificaciones">Ver detalle <span class="arrow">→</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div id="statsContainer" class="stats-grid">
+                <!-- Se inyecta con JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN PROFESORES -->
+        <section id="section-profesores" class="section section-profesores">
+            <h2 class="section-title"><span class="icon">👨‍🏫</span> Profesores</h2>
+            <p class="section-desc">Lista de docentes activos. Haz clic en uno para ver sus materias y horario.</p>
+            <div class="list-container" id="profesoresList">
+                <!-- Se llena con JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN MATERIAS -->
+        <section id="section-materias" class="section section-materias">
+            <h2 class="section-title"><span class="icon">📚</span> Materias</h2>
+            <p class="section-desc">Currículo académico. Haz clic en una materia para ver el docente y los alumnos.</p>
+            <div class="list-container" id="materiasList">
+                <!-- Se llena con JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN CALIFICACIONES -->
+        <section id="section-calificaciones" class="section section-calificaciones">
+            <h2 class="section-title"><span class="icon">📊</span> Calificaciones</h2>
+            <p class="section-desc">Notas de los alumnos, ordenadas de mayor a menor por materia.</p>
+            <div id="calificacionesContainer">
+                <!-- Se llena con JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN AYUDA -->
+        <section id="section-ayuda" class="section section-ayuda">
+            <h2 class="section-title"><span class="icon">❓</span> Ayuda</h2>
+            <p class="section-desc">Preguntas frecuentes y soporte.</p>
+            <div class="ayuda-grid">
+                <div class="ayuda-item">
+                    <div class="ayuda-icon">👩‍🎓</div>
+                    <h4>¿Cómo gestionar estudiantes?</h4>
+                    <p>Usa el módulo Alumnos desde el inicio. Allí podrás ver la lista completa y acceder a la información personal de cada uno.</p>
+                </div>
+                <div class="ayuda-item">
+                    <div class="ayuda-icon">📊</div>
+                    <h4>¿Dónde ver las calificaciones?</h4>
+                    <p>En la sección Calificaciones. Puedes ver todas las materias con las notas de los alumnos ordenadas de mayor a menor.</p>
+                </div>
+                <div class="ayuda-item">
+                    <div class="ayuda-icon">👨‍🏫</div>
+                    <h4>¿Cómo agregar un profesor?</h4>
+                    <p>Funcionalidad en desarrollo. Próximamente podrás añadir, editar y eliminar docentes desde el panel de administración.</p>
+                </div>
+                <div class="ayuda-item">
+                    <div class="ayuda-icon">📧</div>
+                    <h4>Contacto</h4>
+                    <p>Para soporte técnico o consultas, escríbenos a <strong>soporte@colegiopapu.edu</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="modalContentContainer">
+            <div id="modalBody"></div>
+            <div class="btn-group-modal">
+                <button class="btn btn-danger" id="modalCloseBtn">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <strong>🏫 Colegio Papu</strong> <span>|</span> Sistema Escolar Integrado <span>|</span> © 2024
+    </footer>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // 1. DATOS SIMULADOS
+            // ============================================================
+
+            const nombresAlumnos = [
+                'Lucía Méndez', 'Tomás Herrera', 'Valentina Ríos', 'Mateo Suárez',
+                'Isabella Díaz', 'Sofía Castro', 'Julián Paredes', 'Emma Fuentes',
+                'Nicolás Bravo', 'Camila Ortega', 'Gabriel Soto', 'Daniela Reyes',
+                'Adrián Morales', 'Paula Jiménez', 'Diego Vega', 'Valeria Ortiz',
+                'Samuel Rojas', 'Renata Salazar', 'Iván Peña', 'Clara Medina'
+            ];
+
+            const alumnos = nombresAlumnos.map((nombre, i) => ({
+                id: i + 1,
+                nombre: nombre,
+                edad: 10 + Math.floor(Math.random() * 9),
+                grado: `${6 + Math.floor(Math.random() * 7)}°`,
+                direccion: `Calle ${i+1}, Ciudad`
+            }));
+
+            const profesores = [
+                { id: 1, nombre: 'María González', area: 'Matemáticas', horario: 'Lunes 8-10, Miércoles 10-12' },
+                { id: 2, nombre: 'Carlos Rodríguez', area: 'Lengua y Literatura', horario: 'Martes 9-11, Jueves 11-13' },
+                { id: 3, nombre: 'Ana Martínez', area: 'Ciencias Naturales', horario: 'Lunes 14-16, Viernes 10-12' },
+                { id: 4, nombre: 'Luis Pérez', area: 'Historia', horario: 'Miércoles 14-16, Viernes 14-16' },
+                { id: 5, nombre: 'Sofía Fernández', area: 'Inglés', horario: 'Lunes 10-12, Jueves 14-16' },
+                { id: 6, nombre: 'Diego Ramírez', area: 'Arte', horario: 'Martes 14-16, Viernes 8-10' },
+                { id: 7, nombre: 'Elena Torres', area: 'Educación Física', horario: 'Miércoles 8-10, Jueves 8-10' }
+            ];
+
+            const materias = [
+                { id: 1, nombre: 'Matemáticas', profesorId: 1 },
+                { id: 2, nombre: 'Lengua', profesorId: 2 },
+                { id: 3, nombre: 'Ciencias', profesorId: 3 },
+                { id: 4, nombre: 'Historia', profesorId: 4 },
+                { id: 5, nombre: 'Inglés', profesorId: 5 },
+                { id: 6, nombre: 'Arte', profesorId: 6 }
+            ];
+
+            const alumnosPorMateria = {};
+            materias.forEach(m => {
+                alumnosPorMateria[m.id] = alumnos.map(a => a.id);
+            });
+
+            const calificaciones = [];
+            materias.forEach(m => {
+                alumnos.forEach(a => {
+                    calificaciones.push({
+                        alumnoId: a.id,
+                        materiaId: m.id,
+                        nota: Math.round((Math.random() * 9 + 1) * 10) / 10
+                    });
+                });
+            });
+
+            // ============================================================
+            // 2. MODAL
+            // ============================================================
+
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBody = document.getElementById('modalBody');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+            function openModal(html) {
+                modalBody.innerHTML = html;
+                modalOverlay.classList.add('show');
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('show');
+            }
+
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // ============================================================
+            // 3. FUNCIONES DE LISTAS Y MODALES (mejoradas)
+            // ============================================================
+
+            // Alumnos
+            function mostrarListaAlumnos() {
+                let html = `<h2>👩‍🎓 Lista de Alumnos (${alumnos.length})</h2>
+                           <p class="modal-sub">Haz clic en un alumno para ver su información personal.</p>
+                           <div class="item-list">`;
+                alumnos.forEach(a => {
+                    html += `<div class="item" data-id="${a.id}">
+                                <span class="item-nombre">${a.nombre}</span>
+                                <span class="item-badge">${a.grado}</span>
+                             </div>`;
+                });
+                html += `</div>`;
+                openModal(html);
+                document.querySelectorAll('#modalBody .item').forEach(el => {
+                    el.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        mostrarInfoAlumno(id);
+                    });
+                });
+            }
+
+            function mostrarInfoAlumno(id) {
+                const alumno = alumnos.find(a => a.id === id);
+                if (!alumno) return;
+                const html = `<h2>👤 ${alumno.nombre}</h2>
+                             <div class="info-detalle">
+                                <p><strong>📅 Edad:</strong> ${alumno.edad} años</p>
+                                <p><strong>📚 Grado:</strong> ${alumno.grado}</p>
+                                <p><strong>📍 Dirección:</strong> ${alumno.direccion}</p>
+                             </div>
+                             <button class="btn btn-volver" id="volverLista">⬅ Volver a la lista</button>`;
+                openModal(html);
+                document.getElementById('volverLista').addEventListener('click', mostrarListaAlumnos);
+            }
+
+            // Profesores (con diseño de tarjetas en el modal)
+            function mostrarListaDocentes() {
+                let html = `<h2>👨‍🏫 Lista de Docentes (${profesores.length})</h2>
+                           <p class="modal-sub">Haz clic en un docente para ver sus materias y horario.</p>
+                           <div class="item-list">`;
+                profesores.forEach(p => {
+                    html += `<div class="item" data-id="${p.id}">
+                                <span class="item-nombre">${p.nombre}</span>
+                                <span class="item-badge">${p.area}</span>
+                             </div>`;
+                });
+                html += `</div>`;
+                openModal(html);
+                document.querySelectorAll('#modalBody .item').forEach(el => {
+                    el.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        mostrarInfoDocente(id);
+                    });
+                });
+            }
+
+            function mostrarInfoDocente(id) {
+                const prof = profesores.find(p => p.id === id);
+                if (!prof) return;
+                const materiasDelProf = materias.filter(m => m.profesorId === id);
+                let materiasHtml = '';
+                if (materiasDelProf.length > 0) {
+                    materiasHtml = materiasDelProf.map(m => `<li>📘 ${m.nombre}</li>`).join('');
+                } else {
+                    materiasHtml = '<li>No imparte materias actualmente</li>';
+                }
+                const html = `<h2>👨‍🏫 ${prof.nombre}</h2>
+                             <div class="info-detalle">
+                                <p><strong>📌 Área:</strong> ${prof.area}</p>
+                                <p><strong>🕒 Horario:</strong> ${prof.horario}</p>
+                                <p><strong>📚 Materias que imparte:</strong></p>
+                                <ul>${materiasHtml}</ul>
+                             </div>
+                             <button class="btn btn-volver" id="volverListaDoc">⬅ Volver a la lista</button>`;
+                openModal(html);
+                document.getElementById('volverListaDoc').addEventListener('click', mostrarListaDocentes);
+            }
+
+            // Materias
+            function mostrarListaMaterias() {
+                let html = `<h2>📚 Materias (${materias.length})</h2>
+                           <p class="modal-sub">Haz clic en una materia para ver el docente y los alumnos que la cursan.</p>
+                           <div class="item-list">`;
+                materias.forEach(m => {
+                    const prof = profesores.find(p => p.id === m.profesorId);
+                    html += `<div class="item" data-id="${m.id}">
+                                <span class="item-nombre">${m.nombre}</span>
+                                <span class="item-badge">${prof ? prof.nombre : 'Sin profesor'}</span>
+                             </div>`;
+                });
+                html += `</div>`;
+                openModal(html);
+                document.querySelectorAll('#modalBody .item').forEach(el => {
+                    el.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        mostrarDetalleMateria(id);
+                    });
+                });
+            }
+
+            function mostrarDetalleMateria(id) {
+                const materia = materias.find(m => m.id === id);
+                if (!materia) return;
+                const prof = profesores.find(p => p.id === materia.profesorId);
+                const alumnosIds = alumnosPorMateria[id] || [];
+                const alumnosList = alumnosIds.map(aId => {
+                    const a = alumnos.find(al => al.id === aId);
+                    return a ? a.nombre : 'Desconocido';
+                });
+                let alumnosHtml = alumnosList.length > 0 ? 
+                    alumnosList.map(n => `<li>👩‍🎓 ${n}</li>`).join('') : 
+                    '<li>No hay alumnos inscritos</li>';
+
+                const html = `<h2>📘 ${materia.nombre}</h2>
+                             <div class="info-detalle">
+                                <p><strong>👨‍🏫 Docente:</strong> ${prof ? prof.nombre : 'No asignado'}</p>
+                                <p><strong>👩‍🎓 Alumnos que cursan esta materia (${alumnosList.length}):</strong></p>
+                                <ul>${alumnosHtml}</ul>
+                             </div>
+                             <button class="btn btn-volver" id="volverListaMat">⬅ Volver a la lista</button>`;
+                openModal(html);
+                document.getElementById('volverListaMat').addEventListener('click', mostrarListaMaterias);
+            }
+
+            // Calificaciones (modal para elegir materia)
+            function mostrarListaMateriasCalificaciones() {
+                let html = `<h2>📊 Selecciona una materia</h2>
+                           <p class="modal-sub">Haz clic en una materia para ver las calificaciones de los alumnos, ordenadas de mayor a menor.</p>
+                           <div class="item-list">`;
+                materias.forEach(m => {
+                    html += `<div class="item" data-id="${m.id}">
+                                <span class="item-nombre">${m.nombre}</span>
+                                <span class="item-badge">Ver notas</span>
+                             </div>`;
+                });
+                html += `</div>`;
+                openModal(html);
+                document.querySelectorAll('#modalBody .item').forEach(el => {
+                    el.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        mostrarCalificacionesMateria(id);
+                    });
+                });
+            }
+
+            function mostrarCalificacionesMateria(materiaId) {
+                const materia = materias.find(m => m.id === materiaId);
+                if (!materia) return;
+                const notas = calificaciones.filter(c => c.materiaId === materiaId);
+                notas.sort((a, b) => b.nota - a.nota);
+                let listHtml = notas.map(c => {
+                    const alumno = alumnos.find(a => a.id === c.alumnoId);
+                    let claseNota = '';
+                    if (c.nota >= 8) claseNota = 'nota-alta';
+                    else if (c.nota >= 6) claseNota = 'nota-media';
+                    else claseNota = 'nota-baja';
+                    return `<li>
+                                <span class="nombre-alumno">👩‍🎓 ${alumno ? alumno.nombre : 'Desconocido'}</span>
+                                <span class="nota ${claseNota}">${c.nota}</span>
+                            </li>`;
+                }).join('');
+
+                const html = `<h2>📊 ${materia.nombre} - Calificaciones</h2>
+                             <div class="info-detalle">
+                                <p><strong>Total de alumnos:</strong> ${notas.length}</p>
+                                <ul style="list-style:none; padding:0;">${listHtml}</ul>
+                             </div>
+                             <button class="btn btn-volver" id="volverListaCalif">⬅ Volver a la lista de materias</button>`;
+                openModal(html);
+                document.getElementById('volverListaCalif').addEventListener('click', mostrarListaMateriasCalificaciones);
+            }
+
+            // ============================================================
+            // 4. RENDERIZAR SECCIONES (con diseño mejorado)
+            // ============================================================
+
+            function renderProfesores() {
+                const container = document.getElementById('profesoresList');
+                container.innerHTML = '';
+                const ul = document.createElement('ul');
+                profesores.forEach(p => {
+                    const li = document.createElement('li');
+                    li.className = 'clickeable';
+                    li.innerHTML = `
+                        <span class="nombre">👨‍🏫 ${p.nombre}</span>
+                        <span class="detalle">${p.area} <span class="badge">Ver horario</span></span>
+                        <span class="profesor-icon">📋</span>
+                    `;
+                    li.addEventListener('click', function() {
+                        mostrarInfoDocente(p.id);
+                    });
+                    ul.appendChild(li);
+                });
+                container.appendChild(ul);
+            }
+
+            function renderMaterias() {
+                const container = document.getElementById('materiasList');
+                container.innerHTML = '';
+                const ul = document.createElement('ul');
+                materias.forEach(m => {
+                    const prof = profesores.find(p => p.id === m.profesorId);
+                    const li = document.createElement('li');
+                    li.className = 'clickeable';
+                    li.innerHTML = `
+                        <span class="nombre">📚 ${m.nombre}</span>
+                        <span class="detalle">${prof ? prof.nombre : 'Sin profesor'} <span class="badge badge-verde">Ver alumnos</span></span>
+                        <span class="profesor-icon">📖</span>
+                    `;
+                    li.addEventListener('click', function() {
+                        mostrarDetalleMateria(m.id);
+                    });
+                    ul.appendChild(li);
+                });
+                container.appendChild(ul);
+            }
+
+            function renderCalificaciones() {
+                const container = document.getElementById('calificacionesContainer');
+                container.innerHTML = '';
+
+                const materiasConNotas = materias.map(m => {
+                    const notas = calificaciones.filter(c => c.materiaId === m.id);
+                    notas.sort((a, b) => b.nota - a.nota);
+                    const notasConNombre = notas.map(c => {
+                        const alumno = alumnos.find(a => a.id === c.alumnoId);
+                        return { nombre: alumno ? alumno.nombre : 'Desconocido', nota: c.nota };
+                    });
+                    return { materia: m.nombre, notas: notasConNombre };
+                });
+
+                const iconos = ['🔢', '📝', '🔬', '🏛️', '🌍', '🎨'];
+                materiasConNotas.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'calif-card';
+                    div.style.borderLeftColor = ['#2c7fb8', '#27ae60', '#e67e22', '#8e44ad', '#e74c3c', '#3498db'][index % 6];
+
+                    let html = `<h4>${iconos[index % iconos.length]} ${item.materia} <span class="materia-icon">📋</span></h4>
+                                <ul>`;
+                    item.notas.forEach(nota => {
+                        let claseNota = '';
+                        if (nota.nota >= 8) claseNota = 'nota-alta';
+                        else if (nota.nota >= 6) claseNota = 'nota-media';
+                        else claseNota = 'nota-baja';
+                        html += `<li>
+                                    <span class="nombre-alumno">👩‍🎓 ${nota.nombre}</span>
+                                    <span class="nota ${claseNota}">${nota.nota}</span>
+                                 </li>`;
+                    });
+                    html += `</ul>`;
+                    div.innerHTML = html;
+                    container.appendChild(div);
+                });
+            }
+
+            // ============================================================
+            // 5. ESTADÍSTICAS
+            // ============================================================
+
+            function renderStats(containerId) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                const totalAlumnos = alumnos.length;
+                const totalProfesores = profesores.length;
+                const totalMaterias = materias.length;
+
+                const sumaNotas = calificaciones.reduce((acc, c) => acc + c.nota, 0);
+                const promedio = calificaciones.length > 0 ? (sumaNotas / calificaciones.length) : 0;
+
+                const aprobados = calificaciones.filter(c => c.nota >= 6).length;
+                const reprobados = calificaciones.filter(c => c.nota < 6).length;
+
+                const rangos = [
+                    { min: 0, max: 2, label: '0 - 2', color: '#e74c3c' },
+                    { min: 2, max: 4, label: '2 - 4', color: '#e67e22' },
+                    { min: 4, max: 6, label: '4 - 6', color: '#f1c40f' },
+                    { min: 6, max: 8, label: '6 - 8', color: '#2ecc71' },
+                    { min: 8, max: 10, label: '8 - 10', color: '#3498db' }
+                ];
+
+                const totalCalif = calificaciones.length;
+                const counts = rangos.map(r => {
+                    const count = calificaciones.filter(c => c.nota >= r.min && c.nota < r.max).length;
+                    const percent = totalCalif > 0 ? (count / totalCalif * 100) : 0;
+                    return { ...r, count, percent };
+                });
+
+                const canvasId = 'pieChartStats';
+                const html = `
+                    <div class="stat-box stat-profesores">
+                        <div class="number">${totalProfesores}</div>
+                        <div class="label">Profesores</div>
+                        <div class="stat-icon">👨‍🏫</div>
+                    </div>
+                    <div class="stat-box stat-materias">
+                        <div class="number">${totalMaterias}</div>
+                        <div class="label">Materias</div>
+                        <div class="stat-icon">📚</div>
+                    </div>
+                    <div class="stat-box stat-alumnos">
+                        <div class="number">${totalAlumnos}</div>
+                        <div class="label">Alumnos</div>
+                        <div class="stat-icon">👩‍🎓</div>
+                    </div>
+                    <div class="stat-box stat-promedio">
+                        <div class="number">${promedio.toFixed(1)}</div>
+                        <div class="label">Promedio General</div>
+                        <div class="stat-icon">📊</div>
+                    </div>
+                    <div class="stat-box stat-aprobados">
+                        <div class="number">${aprobados}</div>
+                        <div class="label">Aprobados</div>
+                        <div class="sub-label">${totalCalif > 0 ? (aprobados/totalCalif*100).toFixed(1) : 0}%</div>
+                        <div class="stat-icon">✅</div>
+                    </div>
+                    <div class="stat-box stat-reprobados">
+                        <div class="number">${reprobados}</div>
+                        <div class="label">Reprobados</div>
+                        <div class="sub-label">${totalCalif > 0 ? (reprobados/totalCalif*100).toFixed(1) : 0}%</div>
+                        <div class="stat-icon">❌</div>
+                    </div>
+                    <div class="stat-grafica">
+                        <canvas id="${canvasId}" width="240" height="240"></canvas>
+                        <div class="label">📈 Distribución de Calificaciones</div>
+                        <div class="legend">
+                            ${counts.map(item => `
+                                <span class="legend-item">
+                                    <span class="legend-color" style="background:${item.color};"></span>
+                                    ${item.label} (${item.count}) ${item.percent.toFixed(1)}%
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML = html;
+
+                // Dibujar gráfica
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                const radius = Math.min(width, height) / 2 * 0.8;
+                const cx = width / 2;
+                const cy = height / 2;
+
+                let startAngle = -Math.PI / 2;
+                counts.forEach((item) => {
+                    if (item.percent === 0) return;
+                    const sliceAngle = (item.percent / 100) * 2 * Math.PI;
+                    const endAngle = startAngle + sliceAngle;
+
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, radius, startAngle, endAngle);
+                    ctx.closePath();
+                    ctx.fillStyle = item.color;
+                    ctx.fill();
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    if (item.percent > 5) {
+                        const midAngle = startAngle + sliceAngle / 2;
+                        const textRadius = radius * 0.65;
+                        const x = cx + textRadius * Math.cos(midAngle);
+                        const y = cy + textRadius * Math.sin(midAngle);
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 14px Montserrat, Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(`${item.percent.toFixed(0)}%`, x, y);
+                    }
+
+                    startAngle = endAngle;
+                });
+
+                // Círculo central
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius * 0.28, 0, 2 * Math.PI);
+                ctx.fillStyle = '#ffffffcc';
+                ctx.fill();
+                ctx.fillStyle = '#0b2b44';
+                ctx.font = 'bold 20px Montserrat, Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`${totalCalif}`, cx, cy - 6);
+                ctx.font = '11px Montserrat, Arial';
+                ctx.fillStyle = '#4a668a';
+                ctx.fillText('total', cx, cy + 18);
+            }
+
+            // ============================================================
+            // 6. NAVEGACIÓN
+            // ============================================================
+
+            const navLinks = document.querySelectorAll('#mainNav a');
+            const sections = {
+                inicio: document.getElementById('section-inicio'),
+                profesores: document.getElementById('section-profesores'),
+                materias: document.getElementById('section-materias'),
+                calificaciones: document.getElementById('section-calificaciones'),
+                ayuda: document.getElementById('section-ayuda'),
+            };
+
+            function showSection(sectionId) {
+                Object.keys(sections).forEach(key => {
+                    sections[key].classList.remove('active');
+                });
+                if (sections[sectionId]) {
+                    sections[sectionId].classList.add('active');
+                }
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.section === sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+                if (sectionId === 'profesores') renderProfesores();
+                if (sectionId === 'materias') renderMaterias();
+                if (sectionId === 'calificaciones') renderCalificaciones();
+                if (sectionId === 'inicio') renderStats('statsContainer');
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.dataset.section;
+                    if (section) showSection(section);
+                });
+            });
+
+            // ============================================================
+            // 7. EVENTOS DE BOTONES
+            // ============================================================
+
+            document.querySelectorAll('[data-action]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.dataset.action;
+                    switch (action) {
+                        case 'gestion-estudiantes':
+                            mostrarListaAlumnos();
+                            break;
+                        case 'lista-docentes':
+                            mostrarListaDocentes();
+                            break;
+                        case 'ver-materias':
+                            mostrarListaMaterias();
+                            break;
+                        case 'detalle-calificaciones':
+                            mostrarListaMateriasCalificaciones();
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            });
+
+            // ============================================================
+            // 8. INICIALIZACIÓN
+            // ============================================================
+
+            renderStats('statsContainer');
+            renderProfesores();
+            renderMaterias();
+            renderCalificaciones();
+            showSection('inicio');
+
+            console.log('🎉 Colegio Papu - Diseño mejorado con creatividad y estilo.');
+        })();
+    </script>
+</body>
+</html>
